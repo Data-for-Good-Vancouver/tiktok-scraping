@@ -1,7 +1,7 @@
 # data files
 *.mp4
 *.mp3
-*.txt
+^((?!requirements).)*\.txt$
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
