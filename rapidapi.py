@@ -14,17 +14,17 @@ class RapidApi():
         self.apikey = apikey
         self.download_path = download_path
 
-    def headers(self) -> dict:
+    def _headers(self) -> dict:
         return {
             "X-RapidAPI-Key": self.apikey,
             "X-RapidAPI-Host": "tiktok-video-no-watermark2.p.rapidapi.com"
         }
 
-    def querystring(self, tiktok_url) -> dict:
+    def _querystring(self, tiktok_url) -> dict:
         return { "url" : tiktok_url, "hd" : "1" }
 
     def search(self, tiktok_url: str) -> str:
-        response = requests.get(self.RAPIDAPI_URL, headers=self.headers(), params=self.querystring(tiktok_url))
+        response = requests.get(self.RAPIDAPI_URL, headers=self._headers(), params=self._querystring(tiktok_url))
 
         return response.json()["data"]["play"]
 
