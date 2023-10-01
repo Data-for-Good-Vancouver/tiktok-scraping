@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+
 import tiktokapi
 import requests
 import uuid
+import sys
 import os
 from dotenv import load_dotenv
 
@@ -37,25 +40,40 @@ class RapidApi():
         with open(download_filepath, 'wb') as fd:
             fd.write(video_bytes)
         
-        print("Saved Tiktok video as: " + download_filepath)
+        return download_filepath
 
-    def get(self, tiktok_url: str) -> None:
+    def get(self, tiktok_url: str) -> str:
+        """
+        Downloads the tiktok video given via params.
+
+        Args:
+            tiktok_url (str): url to the actual page of the tiktok video
+
+        Returns:
+            str: downloaded video filepath
+        """
         download_link = self.search(tiktok_url)
         
         video_bytes = self.download(download_link)
         
-        self.save(video_bytes)
+        download_path = self.save(video_bytes)
+
+        return download_path
 
 if __name__ == "__main__":
     load_dotenv()
 
     default_tiktok_link = "https://www.tiktok.com/@freshdailyvancouver/video/7232154653176188165"
-    
+
+    # TODO: use stdin
+
     apikey = os.getenv("RAPIDAPI_KEY")
     if apikey is None:
-        print("[ERROR] Missing API KEY")
+        print("[ERROR] Missing API KEY", file=sys.stderr)
         raise Exception("[ERROR] Missing API KEY")
 
     api = RapidApi(apikey)
 
-    api.get(default_tiktok_link)
+    download_filepath = api.get(default_tiktok_link)
+
+    print(download_filepath)

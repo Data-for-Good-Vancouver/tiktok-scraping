@@ -24,3 +24,9 @@ Run the Rapid API python file:
 ```bash
 python rapidapi.py
 ```
+
+Example of a full run of all subsystems:
+
+```bash
+./rapidapi.py | tee /dev/tty | ./ripaudio.py | tee /dev/tty | ./transcribe.py
+```
