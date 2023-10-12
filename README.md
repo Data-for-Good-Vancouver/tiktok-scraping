@@ -17,16 +17,42 @@ Create a .env file and add your api keys to it:
 echo 'RAPIDAPI_KEY="<API KEY HERE>"' >> .env
 ```
 
-### Run
+### Run (cli)
 
 Run the Rapid API python file:
 
 ```bash
-python rapidapi.py
+python rapidapi.py < examples/links
 ```
 
 Example of a full run of all subsystems:
 
+1. activate this project's virtual environment
+
 ```bash
-./rapidapi.py | tee /dev/tty | ./ripaudio.py | tee /dev/tty | ./transcribe.py
+source ./.venv/bin/activate
+```
+
+2. run the all subsystems
+
+```bash
+./rapidapi.py < examples/links | tee /dev/tty | ./ripaudio.py | tee /dev/tty | ./transcribe.py
+```
+
+This way allows you to use standard Unix tools like GNU-Parallel to easily manipulate data into multiple other data stream or to simply add parallelism.
+
+### Run (orchestrator)
+
+The orchestrator tracks the jobs that are currently available in the database.
+
+1. activate this project's virtual environment
+
+```bash
+source ./.venv/bin/activate
+```
+
+2. run the orchestrator
+
+```bash
+./main.py
 ```

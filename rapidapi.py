@@ -11,11 +11,18 @@ class RapidApi():
 
     RAPIDAPI_URL = "https://tiktok-video-no-watermark2.p.rapidapi.com/"
 
-    def __init__(self, apikey: str, download_path: str = "data") -> None:
+    def __init__(self, apikey: str = None, download_path: str = "data") -> None:
         super().__init__()
 
-        self.apikey = apikey
         self.download_path = download_path
+
+        if apikey is None:
+            apikey = os.getenv("RAPIDAPI_KEY")
+            if apikey is None:
+                print("[ERROR] Missing API KEY", file=sys.stderr)
+                raise Exception("[ERR] Missing API KEY")
+
+        self.apikey = apikey
 
     def _headers(self) -> dict:
         return {
@@ -26,7 +33,7 @@ class RapidApi():
     def _querystring(self, tiktok_url) -> dict:
         return { "url" : tiktok_url, "hd" : "1" }
 
-    def search(self, tiktok_url: str) -> str:
+    def retrieve_video_link(self, tiktok_url: str) -> str:
         response = requests.get(self.RAPIDAPI_URL, headers=self._headers(), params=self._querystring(tiktok_url))
 
         return response.json()["data"]["play"]
@@ -52,7 +59,7 @@ class RapidApi():
         Returns:
             str: downloaded video filepath
         """
-        download_link = self.search(tiktok_url)
+        download_link = self.retrieve_video_link(tiktok_url)
         
         video_bytes = self.download(download_link)
         
@@ -63,17 +70,11 @@ class RapidApi():
 if __name__ == "__main__":
     load_dotenv()
 
-    default_tiktok_link = "https://www.tiktok.com/@freshdailyvancouver/video/7232154653176188165"
+    api = RapidApi()
 
-    # TODO: use stdin
+    for line in sys.stdin:
+        tiktok_link = line.strip()
 
-    apikey = os.getenv("RAPIDAPI_KEY")
-    if apikey is None:
-        print("[ERROR] Missing API KEY", file=sys.stderr)
-        raise Exception("[ERROR] Missing API KEY")
+        download_filepath = api.get(tiktok_url=tiktok_link)
 
-    api = RapidApi(apikey)
-
-    download_filepath = api.get(default_tiktok_link)
-
-    print(download_filepath)
+        print(download_filepath)
