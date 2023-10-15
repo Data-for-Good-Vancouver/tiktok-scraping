@@ -75,6 +75,9 @@ if __name__ == "__main__":
     for line in sys.stdin:
         tiktok_link = line.strip()
 
+        if len(tiktok_link) == 0:
+            continue
+
         download_filepath = api.get(tiktok_url=tiktok_link)
 
         print(download_filepath)

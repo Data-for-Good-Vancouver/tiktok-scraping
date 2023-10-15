@@ -17,6 +17,12 @@ Create a .env file and add your api keys to it:
 echo 'RAPIDAPI_KEY="<API KEY HERE>"' >> .env
 ```
 
+Optionally also add a target database:
+```bash
+echo 'DATABASE_CONNECTION="sqlite+pysqlite:///db.sql"' >> .env
+```
+
+
 ### Run (cli)
 
 Run the Rapid API python file:
@@ -55,4 +61,12 @@ source ./.venv/bin/activate
 
 ```bash
 ./main.py
+```
+
+### Adding Jobs (orchestrator)
+
+You can add jobs for the orchestrator to run using the `add_jobs.py` script:
+
+```bash
+./add_jobs < examples/links
 ```

@@ -6,10 +6,12 @@ import sys
 class Wrapper(object): # TODO: complete to wrap this and never have random stdout ouput anymore
     def __init__(self, wrapped_class, *args, **kwargs):
         self.original_stdout = sys.stdout
+        # TEST
         import pprint
         pprint.pprint(args)
         pprint.pprint(kwargs)
         print("=" * 300)
+        # TEST END
         self.wrapped_class = wrapped_class(*args, *kwargs)
 
     def __getattr__(self,attr):

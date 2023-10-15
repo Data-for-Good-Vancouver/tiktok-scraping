@@ -2,6 +2,7 @@
 
 from multiprocessing.dummy import Pool as ThreadPool
 
+from argparse import ArgumentParser
 from env import create_db_engine
 from orm import *
 from rapidapi import *
@@ -27,7 +28,7 @@ class TiktokOrchestrator:
             match job.job_phase:
                 case JobPhase.SEARCH:
                     # TODO: need to make proper search functions
-                    raise NotImplementedError
+                    pass
                 
                 case JobPhase.DOWNLOAD:
                     job.video_data = self.api.get(job.source)
@@ -48,25 +49,35 @@ class TiktokOrchestrator:
             raise
 
         job.job_status = JobStatus.COMPLETE
-    
-        # TODO: this is very inelegant, fix it
-        if job.job_phase == JobPhase.TRANSCRIPTION:
-            job.job_phase = JobPhase.DONE
-            
         session.commit()
 
-    def run_all_jobs(self) -> None:
+    def run_all_jobs(self, until_all_done : bool = False) -> None:
         # TODO: add parallelism
 
         with Session(self.engine) as session:
+            while session.query(SSJob).where(
+                not (SSJob.job_phase == JobPhase.TRANSCRIPTION
+                     and (SSJob.job_status == JobStatus.COMPLETE)) and
+                         SSJob.job_status != JobStatus.FAILED).count() > 0:
 
-            jobs = session.scalars(select(SSJob).where(SSJob.job_phase != JobPhase.DONE)).all()
+                select_stmt = select(SSJob).where(not (SSJob.job_phase == JobPhase.TRANSCRIPTION and SSJob.job_status == JobStatus.COMPLETE)
+                                                and SSJob.job_status != JobStatus.FAILED)
+                
+                jobs = session.scalars(select_stmt).all()
 
-            for job in jobs:
-                orch.run_job(job, session)
+                for job in jobs:
+                    self.run_job(job, session)
+
+                if not until_all_done:
+                    break
 
 
 if __name__ == "__main__":
+    parser = ArgumentParser()
+    parser.add_argument("-a", "--all", action="store_true", default=False)
+    args = parser.parse_args()
+    
+    load_dotenv()
     orch = TiktokOrchestrator()
 
-    orch.run_all_jobs()
+    orch.run_all_jobs(until_all_done=args.all)

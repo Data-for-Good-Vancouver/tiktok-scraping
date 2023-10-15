@@ -11,7 +11,7 @@ from sqlalchemy import select, Enum
 from sqlalchemy.orm import Mapped, mapped_column, Session
 from sqlalchemy.orm import relationship
 
-from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from sqlalchemy.orm import DeclarativeBase
 
 class JobStatus(enum.Enum):
     WAITING="waiting"
@@ -25,9 +25,6 @@ class JobPhase(enum.Enum):
     DOWNLOAD="download"
     AUDIOSPLIT="audiosplit"
     TRANSCRIPTION="transcription"
-
-    # Note: Should always be last one in this enum
-    DONE="done"
 
     def next_phase(self):
         """ Gets the next enum in the sequence. In case of overflow resets index to first.

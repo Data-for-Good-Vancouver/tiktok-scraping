@@ -1,36 +1,22 @@
 #!/usr/bin/env python
 
-import speech_recognition as sr
-from os import path
-from pydub import AudioSegment
+import whisper
 import sys
 
 
 def transcribe(mp3_filename : str) -> str:
-    # TODO: maybe return filename instead of full text?
     mp3_filename = mp3_filename.strip()
+    txt_filename = "".join(mp3_filename.split(".")[:-1]) + ".txt"
 
-    wav_filename = "".join(mp3_filename.split(".")[:-1]) + ".wav"
+    model = whisper.load_model("base")
+    result = model.transcribe(mp3_filename)
+
+    with open(txt_filename, 'w') as f:
+        f.write(result["text"])
     
-    # convert mp3 file to wav                                                       
-    sound = AudioSegment.from_mp3(mp3_filename)
-    sound.export(wav_filename, format="wav")
+    print(result["text"])
 
-    # transcribe audio file                                                         
-    AUDIO_FILE = wav_filename
-
-    # use the audio file as the audio source                                        
-    r = sr.Recognizer()
-    with sr.AudioFile(AUDIO_FILE) as source:
-        audio = r.record(source)  # read the entire audio file                  
-
-        text = r.recognize_google(audio)# TODO: change to an offline-capable model
-
-        txt_filename = "".join(mp3_filename.split(".")[:-1]) + ".txt"
-        with open(txt_filename, 'w') as fs:
-            fs.write(text)
-
-        return text
+    return txt_filename
 
 
 if __name__ == "__main__":
