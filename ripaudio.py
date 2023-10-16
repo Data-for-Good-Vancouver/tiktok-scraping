@@ -3,6 +3,8 @@
 from moviepy.editor import *
 import sys
 
+from env import setup_logging
+
 class Wrapper(object): # TODO: complete to wrap this and never have random stdout ouput anymore
     def __init__(self, wrapped_class, *args, **kwargs):
         self.original_stdout = sys.stdout
@@ -69,6 +71,8 @@ def rip_audio(video_filename : str) -> str:
     
 
 if __name__ == "__main__":
+    setup_logging()
+    
     for video_filename in sys.stdin:
         video_filename = video_filename.strip()
         audio_filename = rip_audio(video_filename)

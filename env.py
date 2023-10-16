@@ -1,6 +1,7 @@
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine
 import os
 import sys
+import logging
 
 from orm import Base
 
@@ -16,3 +17,7 @@ def create_db_engine(echo : bool = False):
     Base.metadata.create_all(engine)
 
     return engine
+
+def setup_logging(log_level=logging.DEBUG):
+    fmt = "[%(levelname)s] %(asctime)s - %(message)s"
+    logging.basicConfig(level=log_level, format=fmt)

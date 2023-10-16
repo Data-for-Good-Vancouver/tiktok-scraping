@@ -3,6 +3,8 @@
 import whisper
 import sys
 
+from env import setup_logging
+
 
 def transcribe(mp3_filename : str) -> str:
     mp3_filename = mp3_filename.strip()
@@ -20,6 +22,8 @@ def transcribe(mp3_filename : str) -> str:
 
 
 if __name__ == "__main__":
+    setup_logging()
+    
     for mp3_filename in sys.stdin:
         text_filepath = transcribe(mp3_filename)
         print(text_filepath)

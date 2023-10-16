@@ -6,6 +6,8 @@ import uuid
 import sys
 import os
 from dotenv import load_dotenv
+import env
+import logging
 
 class RapidApi():
 
@@ -19,7 +21,7 @@ class RapidApi():
         if apikey is None:
             apikey = os.getenv("RAPIDAPI_KEY")
             if apikey is None:
-                print("[ERROR] Missing API KEY", file=sys.stderr)
+                logging.error("[ERROR] Missing API KEY")
                 raise Exception("[ERR] Missing API KEY")
 
         self.apikey = apikey
@@ -69,6 +71,7 @@ class RapidApi():
 
 if __name__ == "__main__":
     load_dotenv()
+    env.setup_logging()
 
     api = RapidApi()
 

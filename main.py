@@ -3,11 +3,14 @@
 from multiprocessing.dummy import Pool as ThreadPool
 
 from argparse import ArgumentParser
-from env import create_db_engine
+from env import create_db_engine, setup_logging
 from orm import *
 from rapidapi import *
 from ripaudio import rip_audio
 from transcribe import transcribe
+import logging
+
+from sqlalchemy import and_
 
 
 class TiktokOrchestrator:
@@ -40,7 +43,7 @@ class TiktokOrchestrator:
                     job.transcript_data = transcribe(job.audio_data)
                 
                 case _:
-                    # TODO: is it possible to force exhaustion for a match on enum in Python?
+                    # TODO: is it possible to force-exhaustion for a match on enum in Python?
                     pass
 
         except:
@@ -54,16 +57,14 @@ class TiktokOrchestrator:
     def run_all_jobs(self, until_all_done : bool = False) -> None:
         # TODO: add parallelism
 
-        with Session(self.engine) as session:
-            while session.query(SSJob).where(
-                not (SSJob.job_phase == JobPhase.TRANSCRIPTION
-                     and (SSJob.job_status == JobStatus.COMPLETE)) and
-                         SSJob.job_status != JobStatus.FAILED).count() > 0:
 
-                select_stmt = select(SSJob).where(not (SSJob.job_phase == JobPhase.TRANSCRIPTION and SSJob.job_status == JobStatus.COMPLETE)
-                                                and SSJob.job_status != JobStatus.FAILED)
-                
-                jobs = session.scalars(select_stmt).all()
+        with Session(self.engine) as session:
+            stmt = session.query(SSJob) \
+                .where(~and_(SSJob.job_phase == JobPhase.TRANSCRIPTION and SSJob.job_status == JobStatus.COMPLETE), SSJob.job_status != JobStatus.FAILED)
+
+            while stmt.count() > 0:
+
+                jobs = stmt.all()
 
                 for job in jobs:
                     self.run_job(job, session)
@@ -78,6 +79,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     load_dotenv()
-    orch = TiktokOrchestrator()
+    setup_logging()
 
+    orch = TiktokOrchestrator()
     orch.run_all_jobs(until_all_done=args.all)

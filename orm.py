@@ -2,6 +2,7 @@
 
 from dotenv import load_dotenv
 import env
+import logging
 
 import enum
 
@@ -77,6 +78,7 @@ class SSJob(Base):
 
 if __name__ == "__main__":
     load_dotenv()
+    env.setup_logging()
     
     tt_link = "https://www.tiktok.com/@freshdailyvancouver/video/7232154653176188165"
     ssjob1 = SSJob(source=tt_link)
