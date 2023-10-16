@@ -57,7 +57,6 @@ class TiktokOrchestrator:
     def run_all_jobs(self, until_all_done : bool = False) -> None:
         # TODO: add parallelism
 
-
         with Session(self.engine) as session:
             stmt = session.query(SSJob) \
                 .where(~and_(SSJob.job_phase == JobPhase.TRANSCRIPTION and SSJob.job_status == JobStatus.COMPLETE), SSJob.job_status != JobStatus.FAILED)

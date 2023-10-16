@@ -20,11 +20,11 @@ if __name__ == "__main__":
             if len(tiktok_link) == 0:
                 continue
             
-            if session.query(SSJob).where(SSJob.source == tiktok_link).count() > 0:
+            if session.query(SSJob).where(SSJob.endpoint == tiktok_link).count() > 0:
                 logging.warning(f"Link already exists in jobs: {tiktok_link}")
                 continue
 
-            new_job = SSJob(source=tiktok_link)
+            new_job = SSJob(endpoint=tiktok_link, source='tiktok')
 
             session.add(new_job)
             session.commit()
