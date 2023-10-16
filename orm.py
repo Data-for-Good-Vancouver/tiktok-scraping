@@ -51,8 +51,6 @@ class SSJob(Base):
     job_status: Mapped[JobStatus]
     job_phase: Mapped[JobPhase]
 
-    # TODO: source should be like yotube vs tiktok
-    #       there should be another field for this
     source: Mapped[str]
     endpoint: Mapped[str]
     video_data: Mapped[str]
