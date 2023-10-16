@@ -21,8 +21,8 @@ class RapidApi():
         if apikey is None:
             apikey = os.getenv("RAPIDAPI_KEY")
             if apikey is None:
-                logging.error("[ERROR] Missing API KEY")
-                raise Exception("[ERR] Missing API KEY")
+                logging.error("Missing API KEY")
+                raise Exception("Missing API KEY")
 
         self.apikey = apikey
 
