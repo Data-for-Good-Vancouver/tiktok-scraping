@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import sys
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from env import create_db_engine, setup_logging
+from env import create_db_engine, setup_logging, TIKToK_SOURCE
 from orm import SSJob
 import logging
 
@@ -24,7 +24,7 @@ if __name__ == "__main__":
                 logging.warning(f"Link already exists in jobs: {tiktok_link}")
                 continue
 
-            new_job = SSJob(endpoint=tiktok_link, source='tiktok')
+            new_job = SSJob(endpoint=tiktok_link, source=TIKToK_SOURCE)
 
             session.add(new_job)
             session.commit()

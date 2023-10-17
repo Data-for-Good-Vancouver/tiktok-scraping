@@ -5,6 +5,8 @@ import logging
 
 from orm import Base
 
+TIKToK_SOURCE = "tiktok"
+
 def create_db_engine(echo : bool = False):
     db_conn = os.getenv("DATABASE_CONNECTION")
     if db_conn is None:
