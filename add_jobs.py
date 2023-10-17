@@ -24,7 +24,7 @@ if __name__ == "__main__":
                 logging.warning(f"Link already exists in jobs: {tiktok_link}")
                 continue
 
-            new_job = SSJob(source=tiktok_link, origin=TIKToK_SOURCE)
+            new_job = SSJob(origin=TIKToK_SOURCE, source=tiktok_link)
 
             session.add(new_job)
             session.commit()
