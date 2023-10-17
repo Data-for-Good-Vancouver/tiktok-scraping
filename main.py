@@ -34,7 +34,7 @@ class TiktokOrchestrator:
                     pass
                 
                 case JobPhase.DOWNLOAD:
-                    job.video_data = self.api.get(job.source)
+                    job.video_data = self.api.get(job.origin)
 
                 case JobPhase.AUDIOSPLIT:
                     job.audio_data = rip_audio(job.video_data)

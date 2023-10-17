@@ -51,22 +51,22 @@ class SSJob(Base):
     job_status: Mapped[JobStatus]
     job_phase: Mapped[JobPhase]
 
+    origin: Mapped[str]
     source: Mapped[str]
-    endpoint: Mapped[str]
     video_data: Mapped[str]
     audio_data: Mapped[str]
     transcript_data: Mapped[str]
 
     def __init__(self,
+                origin: str,
                 source: str,
-                endpoint: str,
                 job_status: JobStatus = JobStatus.WAITING,
                 job_phase: JobPhase = JobPhase.SEARCH,
                 video_data: str = "",
                 audio_data: str = "",
                 transcript_data: str = ""):
-        self.source = source 
-        self.endpoint = endpoint
+        self.origin = origin 
+        self.source = source
 
         self.job_status = job_status
         self.job_phase = job_phase
@@ -76,7 +76,7 @@ class SSJob(Base):
         self.transcript_data = transcript_data
 
     def __repr__(self):
-        return f"{self.id} -> {self.source} ({self.job_phase} // {self.job_status})"
+        return f"{self.id} -> {self.origin} ({self.job_phase} // {self.job_status})"
 
 
 if __name__ == "__main__":
@@ -84,8 +84,8 @@ if __name__ == "__main__":
     env.setup_logging()
     
     tt_link = "https://www.tiktok.com/@freshdailyvancouver/video/7232154653176188165"
-    ssjob1 = SSJob(endpoint=tt_link)
-    ssjob2 = SSJob(endpoint="tiktok.com/oiuejrw",
+    ssjob1 = SSJob(source=tt_link)
+    ssjob2 = SSJob(source="tiktok.com/oiuejrw",
                    video_data="data/57fc8a87-df5e-479d-b5e2-79455a6083c0.mp4",
                    job_phase=JobPhase.AUDIOSPLIT)
 
